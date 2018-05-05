@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.android.keepass"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.android.keepass"
       android:installLocation="auto">
     <supports-screens
       android:smallScreens="true"
@@ -60,7 +61,8 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.kdbx" />
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.kdbx" />
             </intent-filter>
-            <intent-filter>
+            <intent-filter android:scheme="http"
+                tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -109,5 +111,9 @@
         <service android:name="com.keepassdroid.services.TimeoutService"></service>
         <meta-data android:name="com.a0soft.gphone.aTrackDog.webURL" android:value="http://keepassdroid.com" />
         <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
+
+        <activity android:name="com.patarapolw.diceware_utils.GenerateDicewarePassword"/>
+        <activity android:name="com.patarapolw.diceware_utils.Policy"/>
+        <activity android:name="com.patarapolw.diceware_utils.Leetify"/>
     </application>
 </manifest> 

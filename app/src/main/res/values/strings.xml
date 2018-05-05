@@ -203,6 +203,10 @@
     <string name="fingerprint_error">Fingerprint problem</string>
     <string name="store_with_fingerprint">Use fingerprint to store this password</string>
     <string name="no_password_stored">No password stored yet for this database</string>
+    
+    <string name="password_length_from">From</string>
+    <string name="password_length_to">To</string>
+    <string name="password_punctuation_count">Punctuation count</string>
 
     <string-array name="clipboard_timeout_options">
     	<item>30 seconds</item>
@@ -215,4 +219,5 @@
     	<item>Medium</item>
     	<item>Large</item>
     </string-array>
+    <string name="password_digit_count">Digit count</string>
 </resources>

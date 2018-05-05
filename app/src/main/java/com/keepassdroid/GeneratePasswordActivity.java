@@ -32,9 +32,18 @@ import android.widget.Toast;
 import com.android.keepass.KeePass;
 import com.android.keepass.R;
 import com.keepassdroid.password.PasswordGenerator;
+import com.patarapolw.diceware_utils.GenerateDicewarePassword;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class GeneratePasswordActivity extends LockCloseActivity {
-	private static final int[] BUTTON_IDS = new int [] {R.id.btn_length6, R.id.btn_length8, R.id.btn_length12, R.id.btn_length16};
+	GenerateDicewarePassword generateDicewarePassword;
+
+	EditText digitCount;
+	EditText punctuationCount;
+	EditText lengthMin;
+	EditText lengthMax;
 	
 	public static void Launch(Activity act) {
 		Intent i = new Intent(act, GeneratePasswordActivity.class);
@@ -42,25 +51,17 @@ public class GeneratePasswordActivity extends LockCloseActivity {
 		act.startActivityForResult(i, 0);
 	}
 	
-	private OnClickListener lengthButtonsListener = new OnClickListener() {
-	    public void onClick(View v) {
-	    	Button button = (Button) v;
-	    	
-	    	EditText editText = (EditText) findViewById(R.id.length);
-	    	editText.setText(button.getText());
-	    }
-	};
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.generate_password);
 		setResult(KeePass.EXIT_NORMAL);
-		
-		for (int id : BUTTON_IDS) {
-        	Button button = (Button) findViewById(id);
-        	button.setOnClickListener(lengthButtonsListener);
-		}
+
+		generateDicewarePassword = new GenerateDicewarePassword(getApplicationContext());
+		digitCount = (EditText) findViewById(R.id.digit_count);
+		punctuationCount = (EditText) findViewById(R.id.punctuation_count);
+		lengthMin = (EditText) findViewById(R.id.length_from);
+		lengthMax = (EditText) findViewById(R.id.length_to);
 		
 		Button genPassButton = (Button) findViewById(R.id.generate_password_button);
         genPassButton.setOnClickListener(new OnClickListener() {
@@ -104,30 +105,16 @@ public class GeneratePasswordActivity extends LockCloseActivity {
 	}
 	
     public String generatePassword() {
-    	String password = "";
-    	
-    	try {
-    		int length = Integer.valueOf(((EditText) findViewById(R.id.length)).getText().toString());
-    		
-    		((CheckBox) findViewById(R.id.cb_uppercase)).isChecked();
-        	
-        	PasswordGenerator generator = new PasswordGenerator(this);
-       	
-	    	password = generator.generatePassword(length,
-	    			((CheckBox) findViewById(R.id.cb_uppercase)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_lowercase)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_digits)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_minus)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_underline)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_space)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_specials)).isChecked(),
-	    			((CheckBox) findViewById(R.id.cb_brackets)).isChecked());
-    	} catch (NumberFormatException e) {
-    		Toast.makeText(this, R.string.error_wrong_length, Toast.LENGTH_LONG).show();
-		} catch (IllegalArgumentException e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-    	
-    	return password;
+        JSONObject passwordOptions = new JSONObject();
+        try {
+            passwordOptions.put("digit_count", Integer.parseInt(digitCount.getText().toString()));
+            passwordOptions.put("punctuation_count", Integer.parseInt(punctuationCount.getText().toString()));
+            passwordOptions.put("length_min", Integer.parseInt(lengthMin.getText().toString()));
+            passwordOptions.put("length_max", Integer.parseInt(lengthMax.getText().toString()));
+        } catch (JSONException ex) {
+            ex.getStackTrace();
+        }
+
+    	return generateDicewarePassword.newPassword(passwordOptions);
     }
 }

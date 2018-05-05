@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId = "com.android.keepass"
-        minSdkVersion 4
-        targetSdkVersion 12
+        minSdkVersion 14
+        targetSdkVersion 23
 
         versionCode = 169
         versionName = "2.2.2.2"
