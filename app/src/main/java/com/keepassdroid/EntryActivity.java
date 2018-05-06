@@ -345,11 +345,14 @@ public class EntryActivity extends LockCloseHideActivity {
 	
 	private void setPasswordStyle() {
 		TextView password = (TextView) findViewById(R.id.entry_password);
+		TextView note = (TextView) findViewById(R.id.entry_comment);
 
 		if ( mShowPassword ) {
 			password.setTransformationMethod(null);
+			note.setTransformationMethod(null);
 		} else {
 			password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+			note.setTransformationMethod(PasswordTransformationMethod.getInstance());
 		}
 	}
 

@@ -71,10 +71,10 @@
 	<TextView android:id="@+id/entry_comment_label"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content" 
-	  android:text="@string/entry_comment"
+	  android:text="@string/entry_note"
 	  style="@style/WhiteOnDarkSmall"
 	/>
-	<TextView android:id="@+id/entry_comment" 
+	<TextView android:id="@+id/entry_comment"
       android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
 	  android:textIsSelectable="true"
