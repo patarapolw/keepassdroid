@@ -31,50 +31,41 @@ import android.widget.EditText;
 import com.android.keepass.KeePass;
 import com.android.keepass.R;
 import com.patarapolw.diceware_utils.DicewarePassword;
-import com.patarapolw.diceware_utils.Policy;
 
-public class GeneratePasswordActivity extends LockCloseActivity {
+public class GeneratePinActivity extends LockCloseActivity {
 	DicewarePassword dicewarePassword;
-    Policy policy;
 
 	EditText digitCount;
-	EditText punctuationCount;
-	EditText lengthMin;
-	EditText lengthMax;
-	
+
 	public static void Launch(Activity act) {
-		Intent i = new Intent(act, GeneratePasswordActivity.class);
-		
+		Intent i = new Intent(act, GeneratePinActivity.class);
+
 		act.startActivityForResult(i, 0);
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.generate_password);
+		setContentView(R.layout.generate_password_pin);
 		setResult(KeePass.EXIT_NORMAL);
 
 		dicewarePassword = new DicewarePassword(getApplicationContext());
-		policy = new Policy(getApplicationContext());
 
-		digitCount = (EditText) findViewById(R.id.digit_count);
-		punctuationCount = (EditText) findViewById(R.id.punctuation_count);
-		lengthMin = (EditText) findViewById(R.id.length_from);
-		lengthMax = (EditText) findViewById(R.id.length_to);
-		
-		Button genPassButton = (Button) findViewById(R.id.generate_password_button);
+		digitCount = (EditText) findViewById(R.id.pin_digit_count);
+
+		Button genPassButton = (Button) findViewById(R.id.pin_generate_button);
         genPassButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				fillPassword();
 			}
 		});
-        
-        Button acceptButton = (Button) findViewById(R.id.accept_button);
+
+        Button acceptButton = (Button) findViewById(R.id.pin_accept_button);
         acceptButton.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View v) {
-				EditText password = (EditText) findViewById(R.id.password);
-				EditText mnemonic = (EditText) findViewById(R.id.password_mnemonic);
+				EditText password = (EditText) findViewById(R.id.pin);
+				EditText mnemonic = (EditText) findViewById(R.id.pin_mnemonic);
 				
 				Intent intent = new Intent();
 				intent.putExtra("com.keepassdroid.password.generated_password", password.getText().toString());
@@ -86,7 +77,7 @@ public class GeneratePasswordActivity extends LockCloseActivity {
 			}
 		});
         
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        Button cancelButton = (Button) findViewById(R.id.pin_cancel_button);
         cancelButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -101,20 +92,15 @@ public class GeneratePasswordActivity extends LockCloseActivity {
 	}
 	
 	private void fillPassword() {
-		EditText txtPassword = (EditText) findViewById(R.id.password);
-		EditText txtMnemonic = (EditText) findViewById(R.id.password_mnemonic);
-		generatePassword();
-		txtPassword.setText(dicewarePassword.getPassword());
+		EditText txtPassword = (EditText) findViewById(R.id.pin);
+		EditText txtMnemonic = (EditText) findViewById(R.id.pin_mnemonic);
+		generatePin();
+		txtPassword.setText(dicewarePassword.getPin());
 		txtMnemonic.setText(TextUtils.join(" ", dicewarePassword.getKeywordList()));
 	}
 	
-    public void generatePassword() {
-        policy.setDigit_count(Integer.parseInt(digitCount.getText().toString()));
-        policy.setLength_max(Integer.parseInt(lengthMax.getText().toString()));
-        policy.setLength_min(Integer.parseInt(lengthMin.getText().toString()));
-        policy.setPunctuation_count(Integer.parseInt(punctuationCount.getText().toString()));
-
-        dicewarePassword.setPolicy(policy);
-    	dicewarePassword.generatePassword();
+    public void generatePin() {
+		EditText digitCount = (EditText) findViewById(R.id.pin_digit_count);
+    	dicewarePassword.generatePin(Integer.parseInt(digitCount.getText().toString()));
     }
 }

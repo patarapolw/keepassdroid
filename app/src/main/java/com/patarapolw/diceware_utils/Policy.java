@@ -2,6 +2,7 @@ package com.patarapolw.diceware_utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -56,11 +57,20 @@ public class Policy extends Activity {
         }
     }
 
-    private String[] leetify_one(String[] listOfKeywords){
-        int index = random.nextInt(listOfKeywords.length);
-        listOfKeywords[index] = leetify.doLeetify(listOfKeywords[index]);
+    public void setDigit_count(int digit_count1){
+        digit_count = digit_count1;
+    }
 
-        return listOfKeywords;
+    public void setPunctuation_count(int punctuation_count1){
+        punctuation_count = punctuation_count1;
+    }
+
+    public void setLength_min(int length_min1){
+        length_min = length_min1;
+    }
+
+    public void setLength_max(int length_max1){
+        length_max = length_max1;
     }
 
     public String[] insert_symbol_one(String[] listOfKeywords){
@@ -81,65 +91,6 @@ public class Policy extends Activity {
         }
 
         return result.toArray(new String[0]);
-    }
-
-    private String[] insert_number_one(String[] listOfKeywords){
-        ArrayList<String> result = new ArrayList<>();
-        int index = random.nextInt(listOfKeywords.length + 1);
-
-        for(int i=0; i<listOfKeywords.length; i++){
-            result.add(listOfKeywords[i]);
-            if(i == index){
-                int numberIndex = random.nextInt(numbers.length());
-                result.add(Character.toString(numbers.charAt(numberIndex)));
-            }
-        }
-
-        if(index > listOfKeywords.length){
-            int numberIndex = random.nextInt(numbers.length());
-            result.add(Character.toString(numbers.charAt(numberIndex)));
-        }
-
-        return result.toArray(new String[0]);
-    }
-
-    private String[] switch_case_one(String[] listOfKeywords){
-        int wordIndex = random.nextInt(listOfKeywords.length);
-        Log.d("memorable_pasword", "wordIndex: " + wordIndex);
-        int charIndex = random.nextInt(listOfKeywords[wordIndex].length());
-        Log.d("memorable_password", "charIndex: " + charIndex);
-        System.out.print(charIndex);
-        StringBuilder newWord = new StringBuilder();
-
-        for(int i=0; i<listOfKeywords[wordIndex].length(); i++){
-            if(i != charIndex) {
-                newWord.append(listOfKeywords[wordIndex].charAt(i));
-            } else {
-                char character = listOfKeywords[wordIndex].charAt(i);
-                char newCharacter;
-                if(Character.isUpperCase(character)){
-                    newCharacter = Character.toLowerCase(character);
-                } else if(Character.isLowerCase(character)){
-                    newCharacter = Character.toUpperCase(character);
-                } else {
-                    newCharacter = character;
-                }
-                newWord.append(newCharacter);
-            }
-        }
-
-        listOfKeywords[wordIndex] = newWord.toString();
-        return listOfKeywords;
-    }
-
-    private String toPassword(String[] keywordList){
-        StringBuilder builder = new StringBuilder();
-
-        for (String s: keywordList){
-            builder.append(s);
-        }
-
-        return builder.toString();
     }
 
     public boolean isConform(String[] keyword){
@@ -198,14 +149,71 @@ public class Policy extends Activity {
         return null;
     }
 
-    public void setOptions(JSONObject passwordOptions){
-        try {
-            digit_count = passwordOptions.getInt("digit_count");
-            punctuation_count = passwordOptions.getInt("punctuation_count");
-            length_min = passwordOptions.getInt("length_min");
-            length_max = passwordOptions.getInt("length_max");
-        } catch (JSONException ex) {
-            ex.getStackTrace();
+    private String[] leetify_one(String[] listOfKeywords){
+        int index = random.nextInt(listOfKeywords.length);
+        listOfKeywords[index] = leetify.doLeetify(listOfKeywords[index]);
+
+        return listOfKeywords;
+    }
+
+    @NonNull
+    private String[] insert_number_one(String[] listOfKeywords){
+        ArrayList<String> result = new ArrayList<>();
+        int index = random.nextInt(listOfKeywords.length + 1);
+
+        for(int i=0; i<listOfKeywords.length; i++){
+            result.add(listOfKeywords[i]);
+            if(i == index){
+                int numberIndex = random.nextInt(numbers.length());
+                result.add(Character.toString(numbers.charAt(numberIndex)));
+            }
         }
+
+        if(index > listOfKeywords.length){
+            int numberIndex = random.nextInt(numbers.length());
+            result.add(Character.toString(numbers.charAt(numberIndex)));
+        }
+
+        return result.toArray(new String[0]);
+    }
+
+    private String[] switch_case_one(String[] listOfKeywords){
+        int wordIndex = random.nextInt(listOfKeywords.length);
+        Log.d("memorable_pasword", "wordIndex: " + wordIndex);
+        int charIndex = random.nextInt(listOfKeywords[wordIndex].length());
+        Log.d("memorable_password", "charIndex: " + charIndex);
+        System.out.print(charIndex);
+        StringBuilder newWord = new StringBuilder();
+
+        for(int i=0; i<listOfKeywords[wordIndex].length(); i++){
+            if(i != charIndex) {
+                newWord.append(listOfKeywords[wordIndex].charAt(i));
+            } else {
+                char character = listOfKeywords[wordIndex].charAt(i);
+                char newCharacter;
+                if(Character.isUpperCase(character)){
+                    newCharacter = Character.toLowerCase(character);
+                } else if(Character.isLowerCase(character)){
+                    newCharacter = Character.toUpperCase(character);
+                } else {
+                    newCharacter = character;
+                }
+                newWord.append(newCharacter);
+            }
+        }
+
+        listOfKeywords[wordIndex] = newWord.toString();
+        return listOfKeywords;
+    }
+
+    @NonNull
+    private String toPassword(String[] keywordList){
+        StringBuilder builder = new StringBuilder();
+
+        for (String s: keywordList){
+            builder.append(s);
+        }
+
+        return builder.toString();
     }
 }

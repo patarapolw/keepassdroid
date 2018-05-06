@@ -2,11 +2,8 @@ package com.patarapolw.diceware_utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.SecureRandom;
 
 /**
@@ -16,66 +13,55 @@ import java.security.SecureRandom;
  * is truncated to 10 - 20 character, while inserting some symbols.
  */
 
-public class GenerateDicewarePassword extends Activity {
+public class DicewarePassword extends Activity {
+    String password = "";
+    String pin = "";
+    String[] keywordList;
+
     SecureRandom random = new SecureRandom();
     Policy policy;
-    Context myContext;
+    KeywordListLoader keywordListLoader;
 
-    public GenerateDicewarePassword(){}
+    public DicewarePassword(){}
 
-    public GenerateDicewarePassword(Context context){
+    public DicewarePassword(Context context){
         policy = new Policy(context);
-        myContext = context;
+        keywordListLoader = new KeywordListLoader(context);
     }
 
-    private String[] getAllKeywords () {
-        String fileName = "eff-long.txt";
-
-        byte[] buffer;
-        try {
-            InputStream is = myContext.getAssets().open(fileName);
-            int size = is.available();
-            buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-        }
-        catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-
-        String allKeywords = new String(buffer);
-        return allKeywords.split("\n");
+    public String getPassword(){
+        return password;
     }
 
-    public String[] keywordList () {
+    public String getPin(){
+        return pin;
+    }
+
+    public String[] getKeywordList(){
+        return keywordList;
+    }
+
+    public void setPolicy(Policy policy1){
+        policy = policy1;
+    }
+
+
+    public void generatePassword() {
         int numberOfKeywords = 6;
-
-        String[] allKeywords = getAllKeywords();
-        String[] result = new String[numberOfKeywords];
-
-        for(int i=0; i<result.length; i++){
-            assert allKeywords != null;
-            result[i] = allKeywords[random.nextInt(allKeywords.length)];
+        String[] keywordResource = new String[numberOfKeywords];
+        for(int i=0; i<numberOfKeywords; i++){
+            keywordResource[i] = keywordListLoader.getKeyword();
         }
+        keywordList = keywordResource;
 
-        return result;
-    }
-
-    public String newPassword(JSONObject passwordOptions) {
-        if(passwordOptions.length() != 0){
-            policy.setOptions(passwordOptions);
-        }
-
-        String[] keywordResource = keywordList();
-        String password;
+        String prePassword;
 
         keywordResource = title_case_all(keywordResource);
         keywordResource = policy.insert_symbol_one(keywordResource);
-        password = toPassword(keywordResource);
-        while (password.length() > policy.getLength_max()) {
+        prePassword = toPassword(keywordResource);
+        while (prePassword.length() > policy.getLength_max()) {
             keywordResource = shorten_one(keywordResource);
-            password = toPassword(keywordResource);
+            prePassword = toPassword(keywordResource);
         }
 
         int timeout = 3000;  // In milliseconds
@@ -84,14 +70,32 @@ public class GenerateDicewarePassword extends Activity {
             if(!policy.isConform(keywordResource)){
                 keywordResource = policy.conformize(keywordResource);
             } else {
-                password = toPassword(keywordResource);
-                return password;
+                prePassword = toPassword(keywordResource);
+                password = prePassword;
+                return;
             }
         }
-
-        return "";
     }
 
+    public void generatePin(int length) {
+        int[] numberPin = new int[length];
+        StringBuilder builder = new StringBuilder();
+
+        for(int i=0; i<length; i++){
+            int number = random.nextInt(10);
+            numberPin[i] = number;
+            builder.append(number);
+        }
+        pin = builder.toString();
+
+        String[] keywordResource = new String[length];
+        for(int i=0; i<length; i++){
+            keywordResource[i] = keywordListLoader.getKeywordForInt(numberPin[i]);
+        }
+        keywordList = keywordResource;
+    }
+
+    @NonNull
     private String toPassword(String[] keywordList){
         StringBuilder builder = new StringBuilder();
 

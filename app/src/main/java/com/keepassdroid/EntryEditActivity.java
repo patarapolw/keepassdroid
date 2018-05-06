@@ -157,13 +157,21 @@ public abstract class EntryEditActivity extends LockCloseHideActivity {
 		});
 
 		// Generate password button
-		Button generatePassword = (Button) findViewById(R.id.generate_button);
+		Button generatePassword = (Button) findViewById(R.id.generate_password_button);
 		generatePassword.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
 				GeneratePasswordActivity.Launch(EntryEditActivity.this);
 			}
 		});
+
+		Button generatePin = (Button) findViewById(R.id.generate_pin_button);
+		generatePin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GeneratePinActivity.Launch(EntryEditActivity.this);
+            }
+        });
 		
 		// Save button
 		Button save = (Button) findViewById(R.id.entry_save);
@@ -213,9 +221,11 @@ public abstract class EntryEditActivity extends LockCloseHideActivity {
 		if (mShowPassword) {
 			EditText pass = (EditText) findViewById(R.id.entry_password);
 			EditText conf = (EditText) findViewById(R.id.entry_confpassword);
+			EditText comment = (EditText) findViewById(R.id.entry_comment);
 			
 			pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 			conf.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+			comment.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 		}
 		
 	}
@@ -280,11 +290,15 @@ public abstract class EntryEditActivity extends LockCloseHideActivity {
 				
 			case RESULT_OK_PASSWORD_GENERATOR:
 				String generatedPassword = data.getStringExtra("com.keepassdroid.password.generated_password");
+				String generatedMnemonic = data.getStringExtra("com.patarapolw.diceware_utils.generated_mnemonic");
+
 				EditText password = (EditText) findViewById(R.id.entry_password);
 				EditText confPassword = (EditText) findViewById(R.id.entry_confpassword);
+				EditText comment = (EditText) findViewById(R.id.entry_comment);
 				
 				password.setText(generatedPassword);
 				confPassword.setText(generatedPassword);
+				comment.setText(generatedMnemonic);
 
 				break;
 			case Activity.RESULT_CANCELED:
@@ -340,14 +354,17 @@ public abstract class EntryEditActivity extends LockCloseHideActivity {
 	private void setPasswordStyle() {
 		TextView password = (TextView) findViewById(R.id.entry_password);
 		TextView confpassword = (TextView) findViewById(R.id.entry_confpassword);
+		TextView comment = (TextView) findViewById(R.id.entry_comment);
 
 		if ( mShowPassword ) {
 			password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 			confpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+			comment.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 
 		} else {
 			password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 			confpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			comment.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 		}
 	}
 

@@ -220,4 +220,13 @@
     	<item>Large</item>
     </string-array>
     <string name="password_digit_count">Digit count</string>
+    <string name="entry_mnemonic">Mnemonic</string>
+    <string name="hint_mnemonic">your mnemonic</string>
+    <string name="password_generate_icon">\?A</string>
+    <string name="password_generate_pin_icon">123</string>
+    <string name="password_mnemonic">generated mnemonics</string>
+    <string name="hint_generated_pin">generated pin</string>
+    <string name="generate_pin">generate pin</string>
+    <string name="entry_note">Note</string>
+    <string name="hint_note">note</string>
 </resources>
